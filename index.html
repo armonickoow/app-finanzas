@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzas Personales</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Librería para exportar Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    
+    <!-- Pantalla de Login -->
+<!-- Pantalla de Login -->
+<div id="loginScreen" style="max-width: 400px; margin: 50px auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: #ffffff;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Iniciar Sesión</h2>
+    <form id="loginForm">
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: 500; margin-bottom: 5px;">Correo Electrónico:</label>
+            <input type="email" id="loginEmail" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: 500; margin-bottom: 5px;">Contraseña:</label>
+            <!-- Contenedor con botón para ojito / mostrar contraseña -->
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="loginPassword" required style="width: 100%; padding: 10px 40px 10px 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+                <button type="button" id="togglePasswordBtn" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 16px; color: #666;" title="Mostrar u ocultar contraseña">👁️</button>
+            </div>
+        </div>
+
+        <!-- Checkbox Recordar Sesión -->
+        <div class="checkbox-container">
+            <label class="custom-checkbox">
+                <input type="checkbox" id="rememberMe">
+                <span class="checkmark"></span>
+                <span class="label-text">Recuerdame</span>
+            </label>
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Ingresar</button>
+        <p id="loginError" style="color: #dc2626; display: none; margin-top: 15px; text-align: center; font-size: 14px;"></p>
+    </form>
+</div>
+
+<div id="appContent" style="display: none;">
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1>💰 Finanzas Personales</h1>
+            <p>Controla tus ingresos y gastos</p>
+        </div>
+    
+        <!-- Botón Hamburguesa (solo visible en pantallas pequeñas) -->
+        <button id="hamburgerBtn" class="hamburger-btn" aria-label="Abrir menú">☰</button>
+    
+        <!-- Contenedor de acciones -->
+        <div id="navbarActions" class="navbar-actions">
+            <button id="exportExcel" class="btn-export">📊 Exportar Excel</button>
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Cambiar tema">🌙</button>
+            <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </nav>
+        
+    <main>
+    
+        <!-- RESUMEN -->
+        <section class="dashboard">
+    
+            <div class="card income">
+                <span>💵 Ingresos</span>
+                <strong id="totalIncome">$0</strong>
+            </div>
+    
+            <div class="card expense">
+                <span>🔴 Egresos</span>
+                <strong id="totalExpense">$0</strong>
+            </div>
+    
+            <div class="card balance">
+                <span>🟢 Balance</span>
+                <strong id="balance">$0</strong>
+            </div>
+    
+            <div class="card savings">
+                <span>💰 Ahorro</span>
+                <strong id="totalSavings">$0</strong>
+            </div>
+    
+        </section>
+    
+    
+        <!-- FORMULARIO -->
+        <section class="panel">
+    
+            <h2>Registrar movimiento</h2>
+    
+            <form id="financeForm">
+    
+                <div class="form-grid">
+    
+                    <div>
+                        <label>Tipo</label>
+    
+                        <select id="type" required>
+                            <option value="egreso">Egreso</option>
+                            <option value="ingreso">Ingreso</option>
+                            <option value="ahorro">Ahorro</option>
+                        </select>
+                    </div>
+    
+    
+                    <div>
+                        <label>Fecha</label>
+                        <input type="date" id="date" required>
+                    </div>
+    
+    
+                    <div>
+                        <label>Categoría</label>
+    
+                        <select id="category" required>
+                            <option value="">Seleccionar</option>
+    
+                            <option value="Alimentación">
+                                🍔 Alimentación
+                            </option>
+    
+                            <option value="Vivienda">
+                                🏠 Vivienda
+                            </option>
+    
+                            <option value="Transporte">
+                                🚗 Transporte
+                            </option>
+    
+                            <option value="Servicios">
+                                💡 Servicios
+                            </option>
+    
+                            <option value="Compras">
+                                🛒 Compras
+                            </option>
+    
+                            <option value="Entretenimiento">
+                                🎮 Entretenimiento
+                            </option>
+    
+                            <option value="Salud">
+                                🏥 Salud
+                            </option>
+    
+                            <option value="Educación">
+                                📚 Educación
+                            </option>
+    
+                            <option value="Viajes">
+                                ✈️ Viajes
+                            </option>
+    
+                            <option value="Deudas">
+                                💳 Deudas
+                            </option>
+    
+                            <option value="Trabajo">
+                                💼 Trabajo
+                            </option>
+    
+                            <option value="Otros">
+                                📦 Otros
+                            </option>
+                        </select>
+                    </div>
+    
+    
+                    <div>
+                        <label>Subcategoría</label>
+    
+                        <select id="subcategory">
+                            <option value="">Seleccionar</option>
+                        </select>
+                    </div>
+    
+    
+                    <div>
+                        <label>Descripción</label>
+                        <input
+                            type="text"
+                            id="description"
+                            placeholder="Ej: Compra supermercado"
+                            required
+                        >
+                    </div>
+    
+    
+                    <div>
+                        <label>Medio de pago</label>
+    
+                        <select id="payment">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Débito">Débito</option>
+                            <option value="Crédito">Crédito</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+    
+    
+                    <div>
+                        <label>Monto</label>
+    
+                        <input
+                            type="number"
+                            id="amount"
+                            placeholder="0"
+                            min="0"
+                            required
+                        >
+                    </div>
+    
+                </div>
+    
+    
+                <button type="submit" class="btn-primary">
+                    + Registrar movimiento
+                </button>
+    
+            </form>
+    
+        </section>
+    
+    
+        <!-- FILTROS -->
+        <section class="panel">
+    
+            <div class="filter-header">
+    
+                <h2>Movimientos</h2>
+    
+                <div>
+    
+                    <select id="filterType">
+                        <option value="todos">Todos</option>
+                        <option value="ingreso">Ingresos</option>
+                        <option value="egreso">Egresos</option>
+                        <option value="ahorro">Ahorros</option>
+                    </select>
+    
+                    <select id="filterCategory">
+                        <option value="todos">Todas las categorías</option>
+                    </select>
+    
+                </div>
+    
+            </div>
+    
+    
+            <div class="table-container">
+    
+                <table>
+    
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Categoría</th>
+                            <th>Subcategoría</th>
+                            <th>Descripción</th>
+                            <th>Medio de pago</th>
+                            <th>Monto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+    
+                    <tbody id="transactionsTable"></tbody>
+    
+                </table>
+    
+            </div>
+    
+        </section>
+    
+    
+        <!-- RESUMEN CATEGORÍAS -->
+        <section class="panel">
+    
+            <h2>📊 Gastos por categoría</h2>
+    
+            <div id="categorySummary"></div>
+    
+        </section>
+    
+    </main>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script  type= 'module' src="js/main.js"></script>
+
+</body>
+</html>
