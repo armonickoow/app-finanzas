@@ -18,3 +18,4 @@ export async function getCurrentUser() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     return session ? session.user : null;
 }
+

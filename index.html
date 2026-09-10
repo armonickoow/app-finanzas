@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanzas Personales</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/navbar.css">
+    <link rel="stylesheet" href="./css/style.css">
 
     <!-- Librería para exportar Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 </head>
 
 <body>
@@ -58,7 +60,19 @@
         <button id="hamburgerBtn" class="hamburger-btn" aria-label="Abrir menú">☰</button>
     
         <!-- Contenedor de acciones -->
-        <div id="navbarActions" class="navbar-actions">
+            <div id="navbarActions" class="navbar-actions">
+                <!-- Barra de Navegación de Gastos -->
+            <div class="views-filter-bar">
+                <button id="btn-mis-gastos" class="tab-btn active" onclick="cambiarVista('mis_gastos', usuarioActual, listaMovimientos, renderizarTabla)">
+            👤 Mis Gastos
+            </button>
+            <button id="btn-pareja" class="tab-btn" onclick="cambiarVista('pareja', usuarioActual, listaMovimientos, renderizarTabla)">
+            👥 Gastos de Pareja
+            </button>
+            <button id="btn-generales" class="tab-btn" onclick="cambiarVista('generales', usuarioActual, listaMovimientos, renderizarTabla)">
+            🏠 Gastos Generales
+            </button>
+            </div>
             <button id="exportExcel" class="btn-export">📊 Exportar Excel</button>
             <button id="themeToggleBtn" class="theme-toggle-btn" title="Cambiar tema">🌙</button>
             <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
@@ -66,6 +80,8 @@
     </nav>
         
     <main>
+
+        
     
         <!-- RESUMEN -->
         <section class="dashboard">

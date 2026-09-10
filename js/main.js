@@ -5,6 +5,7 @@ import { renderTable, populateCategoryFilter } from "./modules/ui.js";
 import { exportToExcel } from "./modules/excel.js";
 import { loginUser, logoutUser, getCurrentUser } from "./modules/auth.js";
 import { initTheme } from "./modules/theme.js";
+import { cambiarVista, filtrarMovimientos } from './modules/views.js';
 
 let transactions = [];
 
@@ -201,4 +202,4 @@ if (loginForm) {
 
 // Inicializar la aplicación
 checkAuthAndLoad();
-initTheme()
+initTheme();

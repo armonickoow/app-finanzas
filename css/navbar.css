@@ -1,0 +1,52 @@
+/* --- VISTA ESCRITORIO --- */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.views-filter-bar {
+  display: flex;
+  gap: 6px;
+}
+
+.views-filter-bar .tab-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.views-filter-bar .tab-btn.active {
+  background: #00bcff;
+  border-color: #00bcff;
+  font-weight: bold;
+}
+
+/* --- VISTA MÓVIL (Menú Hamburguesa) --- */
+@media (max-width: 768px) {
+  /* Al abrir el menú hamburguesa */
+  .navbar-actions {
+    display: none; /* Se activa con la clase de JS de tu hamburguesa (ej: .navbar-actions.open) */
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .views-filter-bar {
+    flex-direction: column; /* Apila los 3 botones en vertical */
+    width: 100%;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Separador */
+  }
+
+  .views-filter-bar .tab-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+  }
+}
