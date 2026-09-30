@@ -4,10 +4,12 @@ const table = document.getElementById("transactionsTable");
 const filterType = document.getElementById("filterType");
 const filterCategory = document.getElementById("filterCategory");
 
-export function renderTable(transactions, onDeleteCallback) {
+export function renderTable(transactions, onDeleteCallback, currentUserId) {
     if (!table) return;
     table.innerHTML = "";
     let filtered = [...transactions];
+
+    const activeUserId = typeof currentUserId === 'object' && currentUserId ? currentUserId.id : currentUserId;
 
     const selectedType = filterType.value;
     const selectedCategory = filterCategory.value;
@@ -32,10 +34,21 @@ export function renderTable(transactions, onDeleteCallback) {
         } else if (transaction.type === "egreso") {
             typeText = "🔴 Egreso";
             typeClass = "expense-text";
+        } else if (transaction.type === "ahorro") {
+            typeText = "💰 Ahorro";
+            typeClass = "saving-text";
+        } else if (transaction.type === "retiro_ahorro") {
+            typeText = "💸 Retiro Ahorro";
+            typeClass = "income-text";
+        } else if (transaction.type === "deposito_ahorro") {
+            typeText = "📥 Depósito Ahorro";
+            typeClass = "saving-text";
         } else {
             typeText = "💰 Ahorro";
             typeClass = "saving-text";
         }
+
+        const isOwner = Boolean(activeUserId && transaction.user_id && transaction.user_id === activeUserId);
 
         row.innerHTML = `
             <td>${formatDate(transaction.date)}</td>
@@ -46,12 +59,14 @@ export function renderTable(transactions, onDeleteCallback) {
             <td>${transaction.payment}</td>
             <td class="${typeClass}">${formatCLP(transaction.amount)}</td>
             <td>
-                <button class="delete-btn" data-id="${transaction.id}">🗑️</button>
+                ${isOwner ? `<button class="delete-btn" data-id="${transaction.id}" title="Eliminar movimiento">🗑️</button>` : ""}
             </td>
         `;
 
         const deleteBtn = row.querySelector(".delete-btn");
-        deleteBtn.addEventListener("click", () => onDeleteCallback(transaction.id));
+        if (deleteBtn) {
+            deleteBtn.addEventListener("click", () => onDeleteCallback(transaction.id));
+        }
 
         table.appendChild(row);
     });

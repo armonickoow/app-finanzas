@@ -19,3 +19,8 @@ export async function getCurrentUser() {
     return session ? session.user : null;
 }
 
+export function onAuthStateChange(callback) {
+    return supabaseClient.auth.onAuthStateChange(callback);
+}
+
+
