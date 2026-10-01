@@ -1,4 +1,4 @@
-import { formatCLP, formatDate } from "./summary.js";
+import { formatCurrency, formatDate } from "./summary.js";
 
 const table = document.getElementById("transactionsTable");
 const filterType = document.getElementById("filterType");
@@ -57,7 +57,7 @@ export function renderTable(transactions, onDeleteCallback, currentUserId) {
             <td>${transaction.subcategory || "-"}</td>
             <td>${transaction.description}</td>
             <td>${transaction.payment}</td>
-            <td class="${typeClass}">${formatCLP(transaction.amount)}</td>
+            <td class="${typeClass}">${formatCurrency(transaction.amount)}</td>
             <td>
                 ${isOwner ? `<button class="delete-btn" data-id="${transaction.id}" title="Eliminar movimiento">🗑️</button>` : ""}
             </td>

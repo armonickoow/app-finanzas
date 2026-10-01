@@ -1,6 +1,18 @@
-export function formatCLP(value) {
-  const number = Math.round(Number(value));
-  return "$" + number.toLocaleString("es-CL");
+export function getCurrency() {
+    return localStorage.getItem("app_currency") || "CLP";
+}
+
+export function formatCurrency(value) {
+    const number = Number(value) || 0;
+    const currency = getCurrency();
+    
+    if (currency === "AUD") {
+        // Dólar australiano con 2 decimales
+        return "$" + number.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } else {
+        // Peso chileno sin decimales
+        return "$" + Math.round(number).toLocaleString("es-CL");
+    }
 }
 
 export function formatDate(dateString) {
@@ -40,12 +52,12 @@ export function updateSummaryCards(transactions) {
   const totalSavingsEl = document.getElementById("totalSavings");
   const balanceEl = document.getElementById("balance");
 
-  if (totalIncomeEl) totalIncomeEl.textContent = formatCLP(income);
-  if (totalExpenseEl) totalExpenseEl.textContent = formatCLP(expense);
-  if (totalSavingsEl) totalSavingsEl.textContent = formatCLP(savings);
+  if (totalIncomeEl) totalIncomeEl.textContent = formatCurrency(income);
+  if (totalExpenseEl) totalExpenseEl.textContent = formatCurrency(expense);
+  if (totalSavingsEl) totalSavingsEl.textContent = formatCurrency(savings);
   
   if (balanceEl) {
-      balanceEl.textContent = formatCLP(availableBalance);
+      balanceEl.textContent = formatCurrency(availableBalance);
       if (availableBalance < 0) {
           balanceEl.style.color = "#ef4444";
       } else {
@@ -83,7 +95,7 @@ export function renderCategorySummary(transactions) {
           element.innerHTML = `
               <div class="category-info">
                   <span>${categoryName}</span>
-                  <strong>${formatCLP(total)}</strong>
+                  <strong>${formatCurrency(total)}</strong>
               </div>
               <div class="progress">
                   <div class="progress-bar" style="width:${percentage}%"></div>

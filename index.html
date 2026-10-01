@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanzas Personales</title>
+    
+    <!-- Configuración PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="data:,">
@@ -407,6 +412,14 @@
                 <input type="text" id="profileHogarId" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; background: #f8fafc; color: #1e293b; font-size: 14px;">
             </div>
 
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #334155; font-size: 14px;">Moneda de Visualización:</label>
+                <select id="profileCurrency" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #1e293b; font-size: 14px;">
+                    <option value="CLP">Pesos Chilenos (CLP)</option>
+                    <option value="AUD">Dólares Australianos (AUD)</option>
+                </select>
+            </div>
+
             <div class="checkbox-container" style="margin-bottom: 20px;">
                 <label class="custom-checkbox">
                     <input type="checkbox" id="profileShareSavings">
@@ -424,6 +437,18 @@
 </div>
 
 <script type='module' src="js/main.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        console.log('Service Worker registrado con éxito. Scope:', reg.scope);
+      }).catch(err => {
+        console.log('Fallo al registrar el Service Worker:', err);
+      });
+    });
+  }
+</script>
 
 </body>
 </html>

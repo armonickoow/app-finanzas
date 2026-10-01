@@ -1,5 +1,6 @@
 import { getUserDisplayName, areInSameCouple, getPartnerName } from "../config.js";
 import { getCurrentUser } from "./auth.js";
+import { getCurrency } from "./summary.js";
 
 // Paleta de colores ejecutiva (Estilo Pro)
 const C = {
@@ -44,6 +45,8 @@ export async function exportToExcel(transactions = [], currentUser = null) {
     alert("No existen movimientos para exportar.");
     return;
   }
+
+  const NUM_FMT = getCurrency() === "AUD" ? "$#,##0.00" : "$#,##0";
 
   // 1. Obtener usuario activo
   let user = currentUser;
@@ -129,7 +132,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
 
     const v = sDash.getCell(k.cV.split(":")[0]);
     v.value = k.val;
-    v.numFmt = "$#,##0";
+    v.numFmt = NUM_FMT;
     v.alignment = { horizontal: "center", vertical: "middle" };
     v.font = { name: "Calibri", size: 15, bold: true, color: { argb: k.txt } };
     v.fill = { type: "pattern", pattern: "solid", fgColor: { argb: k.bg } };
@@ -179,22 +182,22 @@ export async function exportToExcel(transactions = [], currentUser = null) {
     r.getCell(1).border = BORDER_BOX;
 
     r.getCell(2).value = vals.inc;
-    r.getCell(2).numFmt = "$#,##0";
+    r.getCell(2).numFmt = NUM_FMT;
     r.getCell(2).fill = fill;
     r.getCell(2).border = BORDER_BOX;
 
     r.getCell(3).value = vals.exp;
-    r.getCell(3).numFmt = "$#,##0";
+    r.getCell(3).numFmt = NUM_FMT;
     r.getCell(3).fill = fill;
     r.getCell(3).border = BORDER_BOX;
 
     r.getCell(4).value = vals.sav;
-    r.getCell(4).numFmt = "$#,##0";
+    r.getCell(4).numFmt = NUM_FMT;
     r.getCell(4).fill = fill;
     r.getCell(4).border = BORDER_BOX;
 
     r.getCell(5).value = { formula: `B${rIdx}-C${rIdx}-D${rIdx}` };
-    r.getCell(5).numFmt = "$#,##0";
+    r.getCell(5).numFmt = NUM_FMT;
     r.getCell(5).fill = fill;
     r.getCell(5).border = BORDER_BOX;
 
@@ -213,22 +216,22 @@ export async function exportToExcel(transactions = [], currentUser = null) {
   totCatRow.getCell(1).border = BORDER_TOTAL;
 
   totCatRow.getCell(2).value = { formula: `SUM(B${startCatRow}:B${endCatRow})` };
-  totCatRow.getCell(2).numFmt = "$#,##0";
+  totCatRow.getCell(2).numFmt = NUM_FMT;
   totCatRow.getCell(2).font = { bold: true, color: { argb: C.GREEN_TXT } };
   totCatRow.getCell(2).border = BORDER_TOTAL;
 
   totCatRow.getCell(3).value = { formula: `SUM(C${startCatRow}:C${endCatRow})` };
-  totCatRow.getCell(3).numFmt = "$#,##0";
+  totCatRow.getCell(3).numFmt = NUM_FMT;
   totCatRow.getCell(3).font = { bold: true, color: { argb: C.RED_TXT } };
   totCatRow.getCell(3).border = BORDER_TOTAL;
 
   totCatRow.getCell(4).value = { formula: `SUM(D${startCatRow}:D${endCatRow})` };
-  totCatRow.getCell(4).numFmt = "$#,##0";
+  totCatRow.getCell(4).numFmt = NUM_FMT;
   totCatRow.getCell(4).font = { bold: true, color: { argb: C.AMBER_TXT } };
   totCatRow.getCell(4).border = BORDER_TOTAL;
 
   totCatRow.getCell(5).value = { formula: `SUM(E${startCatRow}:E${endCatRow})` };
-  totCatRow.getCell(5).numFmt = "$#,##0";
+  totCatRow.getCell(5).numFmt = NUM_FMT;
   totCatRow.getCell(5).font = { bold: true, color: { argb: C.BLUE_TXT } };
   totCatRow.getCell(5).border = BORDER_TOTAL;
 
@@ -286,7 +289,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
     r.getCell(2).border = BORDER_BOX;
 
     r.getCell(3).value = pVal.total;
-    r.getCell(3).numFmt = "$#,##0";
+    r.getCell(3).numFmt = NUM_FMT;
     r.getCell(3).fill = fill;
     r.getCell(3).border = BORDER_BOX;
 
@@ -309,7 +312,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
   totPayRow.getCell(2).border = BORDER_TOTAL;
 
   totPayRow.getCell(3).value = { formula: `SUM(C${startPayRow}:C${endPayRow})` };
-  totPayRow.getCell(3).numFmt = "$#,##0";
+  totPayRow.getCell(3).numFmt = NUM_FMT;
   totPayRow.getCell(3).font = { bold: true };
   totPayRow.getCell(3).border = BORDER_TOTAL;
 
@@ -370,7 +373,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
     r.getCell(2).border = BORDER_BOX;
 
     r.getCell(3).value = cVal.total;
-    r.getCell(3).numFmt = "$#,##0";
+    r.getCell(3).numFmt = NUM_FMT;
     r.getCell(3).fill = fill;
     r.getCell(3).border = BORDER_BOX;
 
@@ -393,7 +396,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
   totCRow.getCell(2).border = BORDER_TOTAL;
 
   totCRow.getCell(3).value = { formula: `SUM(C${startCRow}:C${endCRow})` };
-  totCRow.getCell(3).numFmt = "$#,##0";
+  totCRow.getCell(3).numFmt = NUM_FMT;
   totCRow.getCell(3).font = { bold: true };
   totCRow.getCell(3).border = BORDER_TOTAL;
 
@@ -436,7 +439,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
       privacy: isPriv ? "🔒 Privado" : "🌐 Compartido"
     });
 
-    row.getCell("amount").numFmt = "$#,##0";
+    row.getCell("amount").numFmt = NUM_FMT;
     row.getCell("id").alignment = { horizontal: "center" };
     row.getCell("date").alignment = { horizontal: "center" };
     row.getCell("type").alignment = { horizontal: "center" };
@@ -462,7 +465,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
       amount: { formula: `SUM(H2:H${misGastos.length + 1})` }
     });
     misTotRow.font = { bold: true };
-    misTotRow.getCell("amount").numFmt = "$#,##0";
+    misTotRow.getCell("amount").numFmt = NUM_FMT;
     misTotRow.getCell("description").alignment = { horizontal: "right" };
     misTotRow.getCell("amount").border = BORDER_TOTAL;
   }
@@ -500,7 +503,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
       amount: Number(t.amount) || 0
     });
 
-    row.getCell("amount").numFmt = "$#,##0";
+    row.getCell("amount").numFmt = NUM_FMT;
     row.getCell("id").alignment = { horizontal: "center" };
     row.getCell("date").alignment = { horizontal: "center" };
     row.getCell("user").alignment = { horizontal: "center" };
@@ -526,7 +529,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
       amount: { formula: `SUM(I2:I${gastosPareja.length + 1})` }
     });
     parejaTotRow.font = { bold: true };
-    parejaTotRow.getCell("amount").numFmt = "$#,##0";
+    parejaTotRow.getCell("amount").numFmt = NUM_FMT;
     parejaTotRow.getCell("description").alignment = { horizontal: "right" };
     parejaTotRow.getCell("amount").border = BORDER_TOTAL;
   }

@@ -29,6 +29,7 @@ const closeSettingsBtn = document.getElementById("closeSettingsBtn");
 const profileName = document.getElementById("profileName");
 const profileHogarId = document.getElementById("profileHogarId");
 const profileShareSavings = document.getElementById("profileShareSavings");
+const profileCurrency = document.getElementById("profileCurrency");
 
 // Elementos Formulario Principal
 const form = document.getElementById("financeForm");
@@ -332,7 +333,10 @@ if (settingsBtn && settingsModal) {
         if (MI_PERFIL) {
             profileName.value = MI_PERFIL.nombre || "";
             profileHogarId.value = MI_PERFIL.hogar_id || "";
-            profileShareSavings.checked = MI_PERFIL.compartir_ahorros !== false; // por defecto true
+            profileShareSavings.checked = MI_PERFIL.compartir_ahorros !== false;
+        }
+        if (profileCurrency) {
+            profileCurrency.value = localStorage.getItem("app_currency") || "CLP";
         }
         settingsModal.style.display = "flex";
     });
@@ -351,6 +355,9 @@ if (settingsBtn && settingsModal) {
         const newName = profileName.value.trim();
         const newHogar = profileHogarId.value.trim() || null;
         const newShare = profileShareSavings.checked;
+        const newCurrency = profileCurrency.value;
+
+        localStorage.setItem("app_currency", newCurrency);
 
         const { error } = await supabaseClient
             .from("perfiles")
@@ -368,7 +375,7 @@ if (settingsBtn && settingsModal) {
             if (userGreeting) userGreeting.textContent = `Hola, ${newName}`;
             settingsModal.style.display = "none";
             
-            // Recargar datos por si cambió el hogar
+            // Recargar datos por si cambió el hogar o la moneda
             await loadUserData(currentUser);
         } else {
             alert("Error al actualizar el perfil.");
