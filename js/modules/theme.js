@@ -41,4 +41,3 @@ function toggleTheme() {
     
     updateMetaThemeColor(isDark);
 }
-}
