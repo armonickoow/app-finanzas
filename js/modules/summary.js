@@ -66,6 +66,8 @@ export function updateSummaryCards(transactions) {
   }
 }
 
+let expenseChartInstance = null;
+
 export function renderCategorySummary(transactions) {
   const container = document.getElementById("categorySummary");
   if (!container) return;
@@ -82,26 +84,76 @@ export function renderCategorySummary(transactions) {
           categoryTotals[t.category] += Number(t.amount);
       });
 
-  const values = Object.values(categoryTotals);
+  const entries = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+  const values = entries.map(e => e[1]);
+  const labels = entries.map(e => e[0]);
   const max = values.length ? Math.max(...values) : 1;
 
-  Object.entries(categoryTotals)
-      .sort((a, b) => b[1] - a[1])
-      .forEach(([categoryName, total]) => {
-          const percentage = (total / max) * 100;
-          const element = document.createElement("div");
-          element.className = "category-item";
+  entries.forEach(([categoryName, total]) => {
+      const percentage = (total / max) * 100;
+      const element = document.createElement("div");
+      element.className = "category-item";
 
-          element.innerHTML = `
-              <div class="category-info">
-                  <span>${categoryName}</span>
-                  <strong>${formatCurrency(total)}</strong>
-              </div>
-              <div class="progress">
-                  <div class="progress-bar" style="width:${percentage}%"></div>
-              </div>
-          `;
+      element.innerHTML = `
+          <div class="category-info">
+              <span>${categoryName}</span>
+              <strong>${formatCurrency(total)}</strong>
+          </div>
+          <div class="progress">
+              <div class="progress-bar" style="width:${percentage}%"></div>
+          </div>
+      `;
 
-          container.appendChild(element);
-      });
+      container.appendChild(element);
+  });
+
+  // Renderizar Gráfico
+  renderChart(labels, values);
+}
+
+function renderChart(labels, data) {
+    const ctx = document.getElementById('expenseChart');
+    if (!ctx) return;
+    
+    if (expenseChartInstance) {
+        expenseChartInstance.destroy();
+    }
+
+    // Paleta de colores atractiva
+    const backgroundColors = [
+        'rgba(16, 185, 129, 0.8)', // Emerald
+        'rgba(59, 130, 246, 0.8)', // Blue
+        'rgba(245, 158, 11, 0.8)', // Amber
+        'rgba(139, 92, 246, 0.8)', // Violet
+        'rgba(236, 72, 153, 0.8)', // Pink
+        'rgba(14, 165, 233, 0.8)', // Sky
+        'rgba(244, 63, 94, 0.8)',  // Rose
+        'rgba(168, 85, 247, 0.8)'  // Purple
+    ];
+
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const textColor = isDarkMode ? '#e2e8f0' : '#334155';
+
+    expenseChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors.slice(0, data.length),
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: textColor, font: { size: 12 } }
+                }
+            }
+        }
+    });
 }

@@ -13,9 +13,10 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="data:,">
 
-    <!-- Librería para exportar Excel -->
+    <!-- Librerías Externas -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -345,6 +346,11 @@
     
             <h2>📊 Gastos por categoría</h2>
     
+            <!-- CONTENEDOR DEL GRÁFICO (Chart.js) -->
+            <div class="chart-container" style="position: relative; height:250px; width:100%; margin-bottom: 20px;">
+                <canvas id="expenseChart"></canvas>
+            </div>
+
             <div id="categorySummary"></div>
     
         </section>

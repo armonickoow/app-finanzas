@@ -1,4 +1,4 @@
-const CACHE_NAME = 'finanzas-aussie-v3';
+const CACHE_NAME = 'finanzas-aussie-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
