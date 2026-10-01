@@ -1,16 +1,17 @@
 import { subcategories } from "./data/categories.js";
-import { fetchHogarId, fetchMovimientos, insertMovimiento, deleteMovimiento } from "./services/supabaseService.js";
+import { fetchHogarId, fetchMovimientos, insertMovimiento, deleteMovimiento, MI_PERFIL } from "./services/supabaseService.js";
 import { updateSummaryCards, renderCategorySummary } from "./modules/summary.js";
 import { renderTable, populateCategoryFilter } from "./modules/ui.js";
 import { exportToExcel } from "./modules/excel.js";
 import { loginUser, logoutUser, getCurrentUser, onAuthStateChange } from "./modules/auth.js";
 import { initTheme } from "./modules/theme.js";
 import { cambiarVista, filtrarMovimientos } from "./modules/views.js";
+import { supabaseClient } from "./config.js";
 
 let transactions = [];
 let currentUser = null;
 
-// Elementos Auth
+// Elementos Auth y Navegación
 const loginScreen = document.getElementById("loginScreen");
 const appContent = document.getElementById("appContent");
 const loginForm = document.getElementById("loginForm");
@@ -20,6 +21,14 @@ const loginError = document.getElementById("loginError");
 const logoutBtn = document.getElementById("logoutBtn");
 const rememberMe = document.getElementById("rememberMe");
 const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+const userGreeting = document.getElementById("userGreeting");
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModal = document.getElementById("settingsModal");
+const settingsForm = document.getElementById("settingsForm");
+const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+const profileName = document.getElementById("profileName");
+const profileHogarId = document.getElementById("profileHogarId");
+const profileShareSavings = document.getElementById("profileShareSavings");
 
 // Elementos Formulario Principal
 const form = document.getElementById("financeForm");
@@ -38,7 +47,6 @@ const exportBtn = document.getElementById("exportExcel");
 // Botones de Vistas / Pestañas
 const btnMisGastos = document.getElementById("btn-mis-gastos");
 const btnPareja = document.getElementById("btn-pareja");
-const btnGenerales = document.getElementById("btn-generales");
 
 if (date) date.value = new Date().toISOString().split("T")[0];
 
@@ -70,11 +78,7 @@ if (btnPareja) {
     });
 }
 
-if (btnGenerales) {
-    btnGenerales.addEventListener("click", () => {
-        cambiarVista("generales", currentUser, transactions, () => renderApp());
-    });
-}
+
 
 // 1. Mostrar/Ocultar contraseña (Ojito)
 if (togglePasswordBtn && loginPassword) {
@@ -213,6 +217,11 @@ async function loadUserData(user) {
 
     await fetchHogarId();
     transactions = await fetchMovimientos();
+    
+    if (userGreeting && MI_PERFIL) {
+        userGreeting.textContent = `Hola, ${MI_PERFIL.nombre}`;
+    }
+
     renderApp();
 }
 
@@ -316,3 +325,57 @@ onAuthStateChange(async (event, session) => {
 
 // Inicialización de Tema
 initTheme();
+
+// Modal Configuración
+if (settingsBtn && settingsModal) {
+    settingsBtn.addEventListener("click", () => {
+        if (MI_PERFIL) {
+            profileName.value = MI_PERFIL.nombre || "";
+            profileHogarId.value = MI_PERFIL.hogar_id || "";
+            profileShareSavings.checked = MI_PERFIL.compartir_ahorros !== false; // por defecto true
+        }
+        settingsModal.style.display = "flex";
+    });
+
+    closeSettingsBtn.addEventListener("click", () => {
+        settingsModal.style.display = "none";
+    });
+
+    settingsForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const btn = e.target.querySelector("button[type='submit']");
+        btn.textContent = "Guardando...";
+        btn.disabled = true;
+
+        const newName = profileName.value.trim();
+        const newHogar = profileHogarId.value.trim() || null;
+        const newShare = profileShareSavings.checked;
+
+        const { error } = await supabaseClient
+            .from("perfiles")
+            .update({
+                nombre: newName,
+                hogar_id: newHogar,
+                compartir_ahorros: newShare
+            })
+            .eq("id", currentUser.id);
+
+        if (!error) {
+            MI_PERFIL.nombre = newName;
+            MI_PERFIL.hogar_id = newHogar;
+            MI_PERFIL.compartir_ahorros = newShare;
+            if (userGreeting) userGreeting.textContent = `Hola, ${newName}`;
+            settingsModal.style.display = "none";
+            
+            // Recargar datos por si cambió el hogar
+            await loadUserData(currentUser);
+        } else {
+            alert("Error al actualizar el perfil.");
+            console.error(error);
+        }
+        
+        btn.textContent = "Guardar Cambios";
+        btn.disabled = false;
+    });
+}

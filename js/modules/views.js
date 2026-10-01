@@ -1,5 +1,6 @@
 // views.js
 import { getUserDisplayName, areInSameCouple } from "../config.js";
+import { MI_PERFIL } from "../services/supabaseService.js";
 
 let vistaActual = 'mis_gastos';
 
@@ -42,7 +43,7 @@ export function filtrarMovimientos(movimientos = [], usuarioLogueado = '') {
     const esMio = (currentUserId && creatorId === currentUserId) || 
                   (currentUserName && currentUserName !== 'sin asignar' && creatorName === currentUserName);
     
-    // 2. Pertenece a la misma pareja (Nico y Carito o Pareja 2)
+    // 2. Pertenece a la misma pareja
     const esDeMiPareja = areInSameCouple(currentUserId || usuarioLogueado, creatorId);
     const esPrivado = m.es_privado === true;
 
@@ -50,13 +51,17 @@ export function filtrarMovimientos(movimientos = [], usuarioLogueado = '') {
       return esMio;
     }
     if (vistaActual === 'pareja') {
-      // Movimientos de su pareja: gastos propios y de su pareja (sin incluir privados de la pareja, ni movimientos de la otra pareja)
-      return esDeMiPareja && (!esPrivado || esMio);
-    }
-    if (vistaActual === 'generales') {
-      // Gastos generales comunes (de ambas parejas / 4 personas) que sean públicos
-      return !esPrivado;
+      if (!esDeMiPareja) return false;
+      if (esPrivado && !esMio) return false;
+      
+      // Si es un movimiento de ahorro y mi configuración dice no compartir, ocultar los ahorros del otro
+      const esAhorro = m.type === 'ahorro' || m.type === 'retiro_ahorro' || m.type === 'deposito_ahorro';
+      if (esAhorro && !esMio && MI_PERFIL && MI_PERFIL.compartir_ahorros === false) {
+          return false;
+      }
+      
+      return true;
     }
     return true;
   });
-}
+}

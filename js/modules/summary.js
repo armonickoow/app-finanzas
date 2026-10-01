@@ -13,28 +13,27 @@ export function updateSummaryCards(transactions) {
   let income = 0;
   let expense = 0;
   let savings = 0;
+  let availableBalance = 0;
 
   transactions.forEach(t => {
       const amt = Number(t.amount) || 0;
       if (t.type === "ingreso") {
           income += amt;
+          availableBalance += amt;
       } else if (t.type === "egreso") {
           expense += amt;
+          availableBalance -= amt;
       } else if (t.type === "ahorro") {
           savings += amt;
+          availableBalance -= amt;
       } else if (t.type === "retiro_ahorro") {
-          // Dinero retirado del ahorro: disminuye el ahorro y suma a ingresos
           savings -= amt;
-          income += amt;
+          availableBalance += amt;
       } else if (t.type === "deposito_ahorro") {
-          // Dinero transferido desde ingresos/disponible hacia ahorro
           savings += amt;
-          expense += amt;
+          availableBalance -= amt;
       }
   });
-
-  // El balance operacional NO incluye el ahorro: es puramente ingresos menos egresos
-  const balance = income - expense;
 
   const totalIncomeEl = document.getElementById("totalIncome");
   const totalExpenseEl = document.getElementById("totalExpense");
@@ -44,7 +43,15 @@ export function updateSummaryCards(transactions) {
   if (totalIncomeEl) totalIncomeEl.textContent = formatCLP(income);
   if (totalExpenseEl) totalExpenseEl.textContent = formatCLP(expense);
   if (totalSavingsEl) totalSavingsEl.textContent = formatCLP(savings);
-  if (balanceEl) balanceEl.textContent = formatCLP(balance);
+  
+  if (balanceEl) {
+      balanceEl.textContent = formatCLP(availableBalance);
+      if (availableBalance < 0) {
+          balanceEl.style.color = "#ef4444";
+      } else {
+          balanceEl.style.color = "";
+      }
+  }
 }
 
 export function renderCategorySummary(transactions) {

@@ -59,7 +59,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
   // Mis Gastos: todos los movimientos propios (privados y públicos)
   const misGastos = transactions.filter(t => t.user_id === userId);
 
-  // Gastos de Pareja y Generales: movimientos compartidos con su pareja o generales
+  // Gastos de Pareja: movimientos compartidos con su pareja
   // Excluye gastos privados ajenos y excluye gastos de la otra pareja
   const gastosPareja = transactions.filter(t => {
     const esMio = t.user_id === userId;
@@ -468,7 +468,7 @@ export async function exportToExcel(transactions = [], currentUser = null) {
   }
 
   // =============================================================
-  // HOJA 3: 👥 Gastos de Pareja y Generales
+  // HOJA 3: 👥 Gastos de Pareja
   // =============================================================
   const sPareja = workbook.addWorksheet("👥 Gastos Pareja", { views: [{ showGridLines: true }] });
   sPareja.columns = [

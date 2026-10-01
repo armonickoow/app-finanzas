@@ -65,13 +65,28 @@
             <div class="views-filter-bar">
                 <button id="btn-mis-gastos" class="tab-btn active">👤 Mis Gastos</button>
                 <button id="btn-pareja" class="tab-btn">👥 Gastos de Pareja</button>
-                <button id="btn-generales" class="tab-btn">🏠 Gastos Generales</button>
             </div>
             
             <div class="navbar-buttons">
-                <button id="exportExcel" class="btn-export">📊 Exportar Excel</button>
-                <button id="themeToggleBtn" class="theme-toggle-btn" title="Cambiar tema">🌙</button>
-                <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+                <!-- Herramientas de la App -->
+                <div class="nav-tools">
+                    <button id="exportExcel" class="btn-export" title="Exportar a Excel">📊 <span class="btn-text">Exportar</span></button>
+                    <button id="themeToggleBtn" class="theme-toggle-btn" title="Cambiar tema">🌙</button>
+                </div>
+                
+                <div class="nav-divider"></div>
+
+                <!-- Perfil y Ajustes -->
+                <div class="user-widget">
+                    <div class="user-info">
+                        <span class="user-avatar">👤</span>
+                        <span id="userGreeting" class="user-greeting">Hola, Usuario</span>
+                    </div>
+                    <div class="user-actions">
+                        <button id="settingsBtn" class="btn-icon" title="Configuración de Perfil">⚙️</button>
+                        <button id="logoutBtn" class="btn-icon btn-logout-icon" title="Cerrar Sesión">🚪</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -96,8 +111,8 @@
             </div>
     
             <div class="card balance">
-                <div class="card-icon">⚖️</div>
-                <span>🟢 Balance Operacional</span>
+                <div class="card-icon">💳</div>
+                <span>💳 Saldo Disponible</span>
                 <strong id="balance">$0</strong>
             </div>
     
@@ -109,11 +124,11 @@
                 <div class="savings-info-box">
                     <div class="savings-badge-row">
                         <span class="savings-badge">🏦 Fondo Independiente</span>
-                        <span class="savings-tag">Protegido del Balance</span>
+                        <span class="savings-tag">Protegido del Saldo</span>
                     </div>
                     <h2>Fondo de Ahorro Acumulado</h2>
                     <strong id="totalSavings" class="savings-amount">$0</strong>
-                    <p class="savings-subtext">Este fondo está separado de tu balance operacional para proteger tus ahorros.</p>
+                    <p class="savings-subtext">Este fondo está separado de tu saldo disponible para proteger tus ahorros.</p>
                 </div>
                 <div class="savings-actions-box">
                     <button type="button" id="btnWithdrawSavings" class="btn-action-withdraw" title="Retirar dinero del ahorro y sumarlo a ingresos">
@@ -376,7 +391,39 @@
     </div>
 </div>
 
-<script  type= 'module' src="js/main.js"></script>
+<!-- MODAL DE CONFIGURACIÓN / PERFIL -->
+<div id="settingsModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h2 style="margin-bottom: 20px; color: #1e293b; font-size: 1.4rem;">⚙️ Configuración de Perfil</h2>
+        <form id="settingsForm">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #334155; font-size: 14px;">Mi Nickname:</label>
+                <input type="text" id="profileName" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; background: #f8fafc; color: #1e293b; font-size: 14px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #334155; font-size: 14px;">Unirme a un Hogar (ID):</label>
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">Pega el ID del grupo de tu pareja para vincularse (o déjalo así si ya están unidos).</p>
+                <input type="text" id="profileHogarId" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; background: #f8fafc; color: #1e293b; font-size: 14px;">
+            </div>
+
+            <div class="checkbox-container" style="margin-bottom: 20px;">
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="profileShareSavings">
+                    <span class="checkmark"></span>
+                    <span class="label-text">Juntar mis ahorros con los de mi pareja</span>
+                </label>
+            </div>
+
+            <div class="modal-buttons" style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" id="closeSettingsBtn" class="btn-cancel" style="padding: 10px 15px; border-radius: 8px; background: #e2e8f0; color: #475569; border: none; cursor: pointer;">Cancelar</button>
+                <button type="submit" class="btn-confirm" style="padding: 10px 15px; border-radius: 8px; background: #3b82f6; color: white; border: none; cursor: pointer; font-weight: bold;">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type='module' src="js/main.js"></script>
 
 </body>
 </html>
